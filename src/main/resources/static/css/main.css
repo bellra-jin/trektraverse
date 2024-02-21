@@ -1,0 +1,54 @@
+/*main_visual*/
+.main_visual{
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+    height: 735px;
+}
+.main_visual:before{
+    content: "";
+    background: url("../images/overlay.jpg") no-repeat center/cover;
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    padding: 1rem 0;
+}
+.main_visual .inner{
+    height: inherit;
+}
+.main_visual .main{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    position: absolute;
+    top: 0;
+    margin-top: 10rem;
+}
+.main_visual .main_img{
+    width: 40%;
+}
+.main_visual .main_img img{
+    width: 90%;
+}
+.main_visual .main_title{
+    width: 60%;
+    text-align: right;
+}
+.main_visual h1{
+    font-size: 3.5rem;
+    color: var(--color-blue2);
+    margin-bottom: 2rem;
+    font-family: 'TheJamsil5Bold';
+    font-weight: bold;
+
+}
+.main_visual p{
+    font-size: 0.9rem;
+    color: var(--color-text);
+}
+
+/*Hot_post*/
+.Hot_post{
+    position: relative;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html
+        lagn="ko"
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!--브라우저 스타일 초기화-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css"/>
+
+    <!--Google Material Icons-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+
+    <!--Common CSS -->
+    <link rel="stylesheet" href="/css/common.css"/>
+
+    <script defer src="/js/common.js"></script>
+</head>
+
+<body >
+<div th:replace="fragments/header :: header"></div>
+
+<div layout:fragment="content"></div>
+
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>
