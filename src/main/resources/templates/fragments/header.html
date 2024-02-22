@@ -13,9 +13,9 @@
                 </div>
                 <nav>
                     <ul>
-                        <li><a href="">국내</a></li>
-                        <li><a href="">해외</a></li>
-                        <li><a href="">테마</a></li>
+                        <li th:each="board : ${boards}">
+                            <a th:href="@{'/' + ${board.boardTitle}}">[[${board.boardTitle}]]</a>
+                        </li>
                     </ul>
                 </nav>
                 <div class="second_nav">

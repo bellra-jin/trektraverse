@@ -1,27 +1,35 @@
 package parkjinhee.projecttrektraverse.comment.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+import parkjinhee.projecttrektraverse.global.entity.BaseEntity;
+import parkjinhee.projecttrektraverse.post.entity.Post;
 
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @Entity
-public class Comment {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    private long post_comment_id;
-    private String comment_writer;
-    private String comment_pw;
-    private String comment_content;
-    private LocalDateTime create_date;
-    private LocalDateTime update_date;
-    private LocalDateTime delete_date;
-    private int comment_like;
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
+    @Column(nullable = false, length = 10)
+    private String commentWriter;
+
+    @Column(nullable = false, length = 8)
+    private String commentPw;
+
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String commentContent;
+
+    @Column(nullable = false)
+    private int commentLike;
 }

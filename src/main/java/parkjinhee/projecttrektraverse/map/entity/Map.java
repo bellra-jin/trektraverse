@@ -1,4 +1,4 @@
-package parkjinhee.projecttrektraverse.Map.entity;
+package parkjinhee.projecttrektraverse.map.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
