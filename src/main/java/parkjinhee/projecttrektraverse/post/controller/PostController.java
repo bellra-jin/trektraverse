@@ -1,14 +1,21 @@
 package parkjinhee.projecttrektraverse.post.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import parkjinhee.projecttrektraverse.board.entity.Board;
+import parkjinhee.projecttrektraverse.board.repository.BoardRepository;
 import parkjinhee.projecttrektraverse.board.service.BoardService;
 import parkjinhee.projecttrektraverse.post.entity.Post;
 import parkjinhee.projecttrektraverse.post.entity.PostDto;
 import parkjinhee.projecttrektraverse.post.mapper.PostMapper;
 import parkjinhee.projecttrektraverse.post.service.PostService;
+import parkjinhee.projecttrektraverse.theme.entity.Theme;
+import parkjinhee.projecttrektraverse.theme.repository.ThemeRepository;
+
+import java.util.Optional;
 
 @Controller
 @RequestMapping({"/posts"})
@@ -23,28 +30,31 @@ public class PostController {
     //private final CommentService commentService;
 
 
-//    @GetMapping({"/{postId}"})
-//    public String getPostDetail(@PathVariable Long postId, Model model){
-//        Post post = this.postService.findPost(postId);
-//        model.addAttribute("post", post);
-//        List<Comment> comments = this.commentService.findCommentsByPostId(postId);
-//        model.addAttribute("comments", comments);
-//        return "post/post";
-//    }
+    private final ThemeRepository themeRepository;
+    private final BoardRepository boardRepository;
+
 
 
     @GetMapping({"/create"})
-    public String createPost(@RequestParam Long boardId, Model model) {
+    public String createPost(@RequestParam Long boardId, Model model, Long themeId) {
         model.addAttribute("boardId", boardId);
+        model.addAttribute("themeId", themeId);
         return "post/createPost";
     }
 
+
+
+
     @PostMapping({"/create"})
-    public String createPostPost(@ModelAttribute PostDto postDto, @RequestParam Long boardId) {
+    public String createPostPost(@ModelAttribute PostDto postDto, @RequestParam Long themeId, @RequestParam Long boardId) {
+
+        Theme theme = themeRepository.findById(themeId).get();
+        Board board = boardRepository.findById(boardId).get();
         Post post = this.postMapper.postDTOToPost(postDto);
-        Post createdPost = this.postService.createPost(post, boardId);
-        return "redirect:/boards/" + createdPost.getBoard().getId();
+        Post createdPost = this.postService.createPost(post, board, theme);
+        return "redirect:/themes/" + createdPost.getTheme().getId();
     }
+
 
     @GetMapping({"/{postId}/edit"})
     public String editPost(@PathVariable Long postId, Model model) {
@@ -69,11 +79,13 @@ public class PostController {
         return "redirect:/posts";
     }
 
-    public PostController(final PostService postService, final BoardService boardService, final PostMapper postMapper){ //, final CommentService commentService) {
+    public PostController(final PostService postService, final BoardService boardService, final PostMapper postMapper, final ThemeRepository themeRepository, final BoardRepository boardRepository){ //, final CommentService commentService) {
         this.postService = postService;
         this.boardService = boardService;
         this.postMapper = postMapper;
         //this.commentService = commentService;
+        this.themeRepository = themeRepository;
+        this.boardRepository = boardRepository;
     }
 
 

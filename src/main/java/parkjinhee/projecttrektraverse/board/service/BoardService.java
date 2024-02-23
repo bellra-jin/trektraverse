@@ -25,8 +25,6 @@ public class BoardService {
             return new ServiceLogicException(ExceptionCode.BOARD_NOT_FOUND);
         });
     }
-    public Board createBoard(Board board) {
-        return this.boardRepository.create(board);
-    }
+
 
 }

@@ -7,7 +7,7 @@ import parkjinhee.projecttrektraverse.post.entity.PostDto;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-02-22T19:58:56+0900",
+    date = "2024-02-23T12:20:46+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.1 (Oracle Corporation)"
 )
 @Component

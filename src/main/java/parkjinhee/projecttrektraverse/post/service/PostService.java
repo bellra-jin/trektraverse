@@ -10,6 +10,8 @@ import parkjinhee.projecttrektraverse.global.exception.ExceptionCode;
 import parkjinhee.projecttrektraverse.global.exception.ServiceLogicException;
 import parkjinhee.projecttrektraverse.post.entity.Post;
 import parkjinhee.projecttrektraverse.post.repository.PostRepository;
+import parkjinhee.projecttrektraverse.theme.entity.Theme;
+import parkjinhee.projecttrektraverse.theme.service.ThemeService;
 
 import java.util.Optional;
 
@@ -18,14 +20,19 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final BoardService boardService;
+    private final ThemeService themeService;
 
-    public PostService(PostRepository postRepository, BoardService boardService) {
+    public PostService(PostRepository postRepository, BoardService boardService, ThemeService themeService) {
         this.boardService = boardService;
         this.postRepository = postRepository;
+        this.themeService = themeService;
     }
 
     public Page<Post> findPostsByBoardAndKeyword(Board board, String keyword, PageRequest pageRequest) {
         return keyword != null && !keyword.isEmpty() ? this.postRepository.findAllByBoardAndPostTitleContaining(board, keyword, pageRequest) : this.postRepository.findAllByBoardOrderByCreatedAtDesc(board, pageRequest);
+    }
+    public Page<Post> findPostsByThemeAndKeyword(Theme theme, String keyword, PageRequest pageRequest) {
+        return keyword != null && !keyword.isEmpty() ? this.postRepository.findAllByThemeAndPostTitleContaining(theme, keyword, pageRequest) : this.postRepository.findAllByThemeOrderByCreatedAtDesc(theme, pageRequest);
     }
 
     public Post findPost(Long postId) {
@@ -34,12 +41,22 @@ public class PostService {
         });
     }
 
-    public Post createPost(Post post, Long boardId) {
-        Board boardToCreate = this.boardService.findBoardById(boardId);
-        post.setBoard(boardToCreate);
+//    public Post createPost(Post post, Long boardId ) {
+//        Board boardToCreate = this.boardService.findBoardById(boardId);
+//        post.setBoard(boardToCreate);
+//
+//        Post savedPost = (Post)this.postRepository.save(post);
+//        return savedPost;
+//    }
+
+    public Post createPost(Post post, Board board, Theme theme) {
+        post.setTheme(theme);
+        post.setBoard(board);
         Post savedPost = (Post)this.postRepository.save(post);
         return savedPost;
     }
+
+
 
     public Post updatePost(Post post, Long postId) {
         post.setId(postId);

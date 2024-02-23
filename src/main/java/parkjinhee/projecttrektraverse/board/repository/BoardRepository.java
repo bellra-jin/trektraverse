@@ -34,7 +34,7 @@ public class BoardRepository {
 
     public Optional<Board> findById(Long id) {
         try {
-            String sql = "SELECT * FROM post WHERE id = ?";
+            String sql = "SELECT * FROM board WHERE id = ?";
             Board board = (Board)this.jdbcTemplate.queryForObject(sql, this.boardRowMapper(), new Object[]{id});
             return Optional.ofNullable(board);
         } catch (EmptyResultDataAccessException var4) {
