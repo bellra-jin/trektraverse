@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import parkjinhee.projecttrektraverse.global.entity.BaseEntity;
 import parkjinhee.projecttrektraverse.board.entity.Board;
+import parkjinhee.projecttrektraverse.region.entity.Region;
 import parkjinhee.projecttrektraverse.theme.entity.Theme;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, length = 30)
     private String postTitle;
 
@@ -31,24 +33,29 @@ public class Post extends BaseEntity {
     @Column(nullable = false, length = 8)
     private String postPw;
 
+
     @ManyToOne
-    @JoinColumn(name = "board_id", nullable = false)
+    @JoinColumn(name = "boardId", nullable = false)
     private Board board;
 
-    @Column(nullable = false)
-    private String region;
+    @ManyToOne
+    @JoinColumn(name="regionId",nullable = false)
+    private Region region;
 
     @ManyToOne
-    @JoinColumn(name = "theme_id", nullable = true)
+    @JoinColumn(name = "themeId", nullable = true)
     private Theme theme;
 
-    @Column(nullable = true)
-    private int postLike;
+//    @Column(nullable = true)
+//    private int postLike;
+//
+//    @ColumnDefault("0")
+//    private int watchCount;
 
-    @ColumnDefault("0")
-    private int watchCount;
 
-    public Post(String title, String contnet, String writer, String password, Board board, String region) {
+
+
+    public Post(String title, String contnet, String writer, String password, Board board, Region region) {
         this.postTitle=title;
         this.postContent=contnet;
         this.postWriter=writer;

@@ -42,7 +42,7 @@
       </div>
       <div class="d-flex w-100 justify-content-between mb-3">
         <form>
-          <div class="input-group">
+          <div class="input-groupTable">
             <input
               class="form-control"
               name="keyword"
@@ -60,9 +60,9 @@
           >게시글 추가</a
         >
       </div>
-      <div class="list-group position-relative mb-3">
+      <div class="list-groupTable position-relative mb-3">
         <a
-          class="board-item list-group-item p-3 list-group-item-action"
+          class="board-item list-groupTable-item p-3 list-groupTable-item-action"
           th:unless="${postPage.isEmpty()}"
           th:each="post : ${postPage}"
           th:href="@{/posts/{postId}(postId=${post.id})}"

@@ -3,20 +3,18 @@ package parkjinhee.projecttrektraverse.board.controller;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import parkjinhee.projecttrektraverse.board.entity.Board;
 import parkjinhee.projecttrektraverse.board.entity.BoardPostDto;
 import parkjinhee.projecttrektraverse.board.mapper.BoardMapper;
+import parkjinhee.projecttrektraverse.board.repository.BoardRepository;
 import parkjinhee.projecttrektraverse.board.service.BoardService;
 import parkjinhee.projecttrektraverse.post.entity.Post;
 import parkjinhee.projecttrektraverse.post.service.PostService;
+import parkjinhee.projecttrektraverse.region.entity.Region;
+import parkjinhee.projecttrektraverse.region.service.RegionService;
 
 import java.util.List;
 
@@ -27,10 +25,16 @@ public class BoardController {
     private final PostService postService;
     private final BoardMapper boardMapper;
 
-    public BoardController(BoardService boardService, PostService postService, BoardMapper boardMapper) {
+    private final BoardRepository boardRepository;
+
+
+
+    public BoardController(BoardService boardService, PostService postService, BoardMapper boardMapper, BoardRepository boardRepository) {
         this.boardService = boardService;
         this.postService = postService;
         this.boardMapper = boardMapper;
+        this.boardRepository = boardRepository;
+
     }
 
     @GetMapping
@@ -50,6 +54,14 @@ public class BoardController {
         model.addAttribute("postPage", postPage);
         return "board/board";
     }
+
+    @Transactional(readOnly = true)
+    public Board findBoardWithGroups(Long id) {
+        return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
+    }
+
+
+
 
 
 
