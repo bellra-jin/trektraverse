@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 삭제 팝업</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div>
+        <form name="delete-form" action="/board/delete" autocomplete="off" method="post">
+            <div>
+                <input type="hidden" name="idx" th:value="${idx}">
+                <br />
+                글을 작성할 때 입력했던 비밀번호를 적어주세요
+                <input type="password" id="password" name="password" maxlength='6'  value="" placeholder="비밀번호">
+                <input type="button" class="btn btn-outline-primary mr-7"onclick="checkPassword()" value="비밀번호 확인">
+                <br />
+                <input type="submit" id="submiBtn"  class="btn btn-outline-primary mr-2" value="삭제" disabled>
+                <a th:href="@{'/board/detail?idx='+${idx}}"><input type="button" class="btn btn-outline-primary mr-2" value="취소"></input></a>
+            </div>
+        </form>
+
+    </div>
+    <script>
+        function checkPassword(){
+            var idx = $('input[name=idx]').val();
+            var password = $('input[name=password]').val();
+
+            $.ajax({
+                type: 'GET',
+                url: '/board/delete/getPassword',
+                data : {idx,password},
+                success: function(result) {
+                    if(result.password == password){
+                        $('#submiBtn').attr('disabled',false);
+                    }
+                    else{
+                        alert("비밀번호가 일치하지않습니다");
+                    }
+                }
+                ,
+                error: function(result) {
+                },
+                complete: function() {
+                }
+
+            })
+        }
+    </script>
+
+</body>
+</html>

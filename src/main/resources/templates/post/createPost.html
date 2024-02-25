@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+            crossorigin="anonymous"
+    />
+    <link
+            href="https://font.elice.io/css?family=Elice+DX+Neolli"
+            rel="stylesheet"
+    />
+
+    <style>
+        html,
+        body {
+            font-family: "Elice DX Neolli", sans-serif;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <title>게시글 추가</title>
+</head>
+<body>
+<div class="container my-5">
+    <div class="header mb-5">
+        <h1 class="text-center">게시글 추가</h1>
+    </div>
+    <form th:action="@{/posts/create}" method="post">
+
+        <select id="board" name="boardId">
+            <option value="">-국가 선택-</option>
+            <th:block th:each="board : ${boards}">
+                <option th:value="${board.id}" th:text="${board.boardTitle}"></option>
+            </th:block>
+        </select>
+
+        <select id="region" name="regionId">
+            <option value="">-지역 선택-</option>
+            <!-- region 옵션 (초기에는 비어 있음) -->
+        </select>
+
+        <select id="theme" name="themeId">
+            <option value="">- 테마 선택 -</option>
+            <th:block th:each="theme : ${themes}">
+                <option th:value="${theme.id}" th:text="${theme.themeTitle}"></option>
+            </th:block>
+        </select>
+
+
+        <input type="text" id="postWriter" name="postWriter" placeholder="닉네임"/>
+        <input type="password" id="postPw" name="postPw" placeholder="비밀번호"/>
+        <div class="mb-3">
+            <label for="postTitle">게시글 제목</label>
+            <input
+                    type="text"
+                    class="form-control"
+                    id="postTitle"
+                    name="postTitle"
+                    maxlength="30"
+                    placeholder="게시글 제목 입력 (최대 30자)"
+                    required
+            />
+        </div>
+        <div class="mb-3">
+            <label for="postContent">내용</label>
+            <textarea
+                    class="form-control"
+                    id="postContent"
+                    name="postContent"
+                    placeholder="내용 입력"
+            ></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">업로드</button>
+        <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="window.history.back();"
+        >
+            취소
+        </button>
+    </form>
+</div>
+
+<!-- 부트스트랩 JS 추가 -->
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"
+></script>
+
+<script>
+    $("#board").change(function() {
+        var boardId = $(this).val();
+        $.ajax({
+            url: "/posts/create/" + boardId,
+            type: "GET",
+            success: function(regions) {
+                var options = "";
+                for(var i=0; i<regions.length; i++) {
+                    options += "<option value='" + regions[i].id + "'>" + regions[i].region + "</option>";
+                }
+                $("#region").html(options);
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>
