@@ -23,7 +23,7 @@ public class BaseEntity {
             updatable = false,
             columnDefinition = "TIMESTAMP"
     )
-    private LocalDateTime createDate;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(
@@ -31,7 +31,7 @@ public class BaseEntity {
             nullable = false,
             columnDefinition = "TIMESTAMP"
     )
-    private LocalDateTime updatedDate;
+    private LocalDateTime updatedAt;
 
     public BaseEntity() {
     }

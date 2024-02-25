@@ -2,48 +2,65 @@ package parkjinhee.projecttrektraverse.post.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import parkjinhee.projecttrektraverse.global.entity.BaseEntity;
 import parkjinhee.projecttrektraverse.board.entity.Board;
+import parkjinhee.projecttrektraverse.region.entity.Region;
 import parkjinhee.projecttrektraverse.theme.entity.Theme;
 
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Setter
 @Getter
 @Entity
 public class Post extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     @Column(nullable = false, length = 30)
-    private String post_title;
+    private String postTitle;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    private String post_content;
+    private String postContent;
 
     @Column(nullable = false, length = 10)
-    private String post_writer;
+    private String postWriter;
 
     @Column(nullable = false, length = 8)
-    private String post_pw;
+    private String postPw;
+
 
     @ManyToOne
-    @JoinColumn(name = "board_title", nullable = false)
+    @JoinColumn(name = "boardId", nullable = false)
     private Board board;
 
     @ManyToOne
-    @JoinColumn(name = "theme_title", nullable = true)
+    @JoinColumn(name="regionId",nullable = false)
+    private Region region;
+
+    @ManyToOne
+    @JoinColumn(name = "themeId", nullable = true)
     private Theme theme;
 
-    @Column(nullable = false)
-    private String region;
+//    @Column(nullable = true)
+//    private int postLike;
+//
+//    @ColumnDefault("0")
+//    private int watchCount;
 
-    private int post_like;
 
-    @ColumnDefault("0")
-    private int watch_count;
 
+
+    public Post(String title, String contnet, String writer, String password, Board board, Region region) {
+        this.postTitle=title;
+        this.postContent=contnet;
+        this.postWriter=writer;
+        this.postPw=password;
+        this.board=board;
+        this.region=region;
+    }
 }

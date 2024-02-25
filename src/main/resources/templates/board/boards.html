@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="row row-cols-3 position-relative">
+      <div
+              class="col mb-3"
+              th:unless="${#lists.isEmpty(boards)}"
+              th:each="board : ${boards}"
+      >
+        <div
+                class="card"
+                onmouseover="event.currentTarget.classList.add('shadow')"
+                onmouseleave="event.currentTarget.classList.remove('shadow')"
+        >
+          <a
+                  class="board-item pe-auto p-3 link-underline link-underline-opacity-0 d-flex"
+                  th:href="@{/boards/{boardId}(boardId=${board.id})}"
+          >
+            <img
+                    class="img-thumbnail w-50 h-50 me-3"
+                    src="hellobit.png"
+                    alt="hellobit"
+            />
+            <div>
+              <h4
+                      class="card-title fw-bold text-dark"
+                      th:text="${board.boardTitle}"
+              >
+                게시판 이름
+              </h4>
+
+            </div>
+            <div
+                    class="position-absolute end-0 bottom-0 mb-3 me-3 btn-groupTable bg-white bg-opacity-75"
+                    role="groupTable"
+                    aria-label="edit-delete"
+            >
+              <button
+                      class="btn btn-outline-primary lh-1"
+                      th:onclick="'event.preventDefault(); location.href=\'/boards/' + ${board.id} + '/edit\''"
+              >
+                <span class="material-symbols-outlined"> edit </span>
+              </button>
+              <button
+                      class="btn btn-outline-danger lh-1"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteModal"
+                      th:onclick="handleDeleteButton(event, [[${board.id}]]);"
+              >
+                <span class="material-symbols-outlined"> delete </span>
+              </button>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+</html>
