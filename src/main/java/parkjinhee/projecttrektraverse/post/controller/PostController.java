@@ -129,24 +129,118 @@ public class PostController {
 
 
 
+    @GetMapping("/edit/{boardId}")
+    @ResponseBody
+    public List<Region> getRegionsByBoard1(@PathVariable("boardId") Long boardId) {
+        return regionService.findByGroupId(boardId);
+    }
+
     @GetMapping({"/{postId}/edit"})
-    public String editPost(@PathVariable Long postId, Model model) {
+    public String editPost(@PathVariable("postId") Long postId, Model model) {
         Post post = this.postService.findPost(postId);
+        List<Board> boards = boardRepository.findAll();
+        List<Theme> themes = themeRepository.findAll();
+
         model.addAttribute("post", post);
+        model.addAttribute("boards", boards);
+        model.addAttribute("themes", themes);
+
         return "post/editPost";
     }
 
+
     @PostMapping({"/{postId}/edit"})
-    public String editPost(@PathVariable Long postId, @ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes) {
+    public String editPost(@PathVariable("postId") Long postId, @ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes) {
+
+        // PostDto에서 ID 값을 가져옵니다.
+        Long boardId = postDto.getBoardId();
+        Long themeId = postDto.getThemeId();
+        Long regionId = postDto.getRegionId();
+
+
+        // 각 ID를 사용해 Board, Theme, Region 객체를 찾습니다.
+        // 이 때, ID 값이 유효하지 않으면 예외를 발생시킵니다.
+        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("No Board found with ID: " + boardId));
+        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NoSuchElementException("No Region found with ID: " + regionId));
+        Theme theme = null;
+        if (themeId != null) {
+            theme = themeRepository.findById(themeId).orElseThrow(() -> new NoSuchElementException("No Theme found with ID: " + themeId));
+        }
+
         Post post = this.postMapper.postDTOToPost(postDto);
+        post.setBoard(board);
+        post.setRegion(region);
+        post.setTheme(theme);
         Post updatedPost = this.postService.updatePost(post, postId);
+
+
+        // Redirect URL 초기화
+        String redirectUrl = "/posts/{postId}";
+
+        // theme 또는 board 값에 따라 다른 리디렉션 URL 설정
+        if (postDto.getThemeId() != null) {
+            redirectUrl = "/themes/" + postDto.getThemeId(); // 예를 들어 /themes/1
+        } else if (postDto.getBoardId() != null) {
+            redirectUrl = "/boards/" + postDto.getBoardId(); // 예를 들어 /boards/1
+        }
+
+        // 리디렉션시 필요한 속성들을 추가
         redirectAttributes.addAttribute("postId", updatedPost.getId());
+        redirectAttributes.addAttribute("boardId", postDto.getBoardId());
+        redirectAttributes.addAttribute("themeId", postDto.getThemeId());
+        redirectAttributes.addAttribute("regionId", postDto.getRegionId());
+
         redirectAttributes.addFlashAttribute("message", "게시글이 수정되었습니다.");
-        return "redirect:/posts/{postId}";
+
+        return "redirect:" + redirectUrl;
     }
 
+//    @PostMapping({"/{postId}/edit"})
+//    public String editPost(@PathVariable("postId") Long postId, @ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes) {
+//        // PostDto 에서 ID 값을 가져와서 Board, Theme, Region 객체를 조회
+//        Long boardId = postDto.getBoardId();
+//        Long themeId = postDto.getThemeId();
+//        Long regionId = postDto.getRegionId();
+//
+//        // 해당 ID를 사용해 Board, Theme, Region 엔티티 찾기
+//        // Board, region 값만 유효하지 않으면 예외처리하기
+//        Board board = boardRepository.findById(boardId).orElseThrow(() -> new NoSuchElementException("No Board found with ID: " + boardId));
+//
+//        Region region = regionRepository.findById(regionId).orElseThrow(() -> new NoSuchElementException("No Region found with ID: " + regionId));
+//
+//        Theme theme = null;
+//        if (themeId != null) {
+//            theme = themeRepository.findById(themeId).orElseThrow(() -> new NoSuchElementException("No Theme found with ID: " + themeId));
+//        }
+//
+//
+//        // 찾아낸 엔티티를 이용하여 Post 객체의 값을 설정합니다.
+//        postDto.setBoardId(boardId);
+//        postDto.setThemeId(themeId);
+//        postDto.setRegionId(regionId);
+//
+//        // Post DTO를 Post 엔티티로 변환합니다.
+//        Post postToUpdate = this.postMapper.postDTOToPost(postDto);
+//        postToUpdate.setId(postId); // 업데이트할 게시글 ID 설정
+//
+//        // 수정된 Post 객체를 데이터베이스에 저장합니다.
+//        Post updatedPost = this.postService.updatePost(postToUpdate);
+//
+//        // 리다이렉트 시 게시글 ID를 path variable로 사용하기 위해 redirectAttributes에 추가합니다.
+//        redirectAttributes.addAttribute("postId", updatedPost.getId());
+//
+//        // 사용자에게 성공 메시지 전달을 위해 Flash 속성 추가
+//        redirectAttributes.addFlashAttribute("message", "게시글이 수정되었습니다.");
+//
+//        // 게시글 상세 페이지로 리다이렉트합니다.
+//        return "redirect:/posts/{postId}";
+//
+//    }
+
+
+
     @DeleteMapping({"/{postId}"})
-    public String deletePost(@PathVariable Long postId, RedirectAttributes redirectAttributes) {
+    public String deletePost(@PathVariable("postId") Long postId, RedirectAttributes redirectAttributes) {
         this.postService.deletePost(postId);
         redirectAttributes.addFlashAttribute("message", "과목이 제거되었습니다.");
         return "redirect:/posts";

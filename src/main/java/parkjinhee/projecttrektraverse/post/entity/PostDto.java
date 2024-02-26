@@ -18,7 +18,7 @@ public class PostDto {
     private String postWriter;
     private String postPw;
     private Long boardId;
-    private Long regionId;;
+    private Long regionId;
     private Long themeId;
 //    private int postLike;
 //    private int watchCount;

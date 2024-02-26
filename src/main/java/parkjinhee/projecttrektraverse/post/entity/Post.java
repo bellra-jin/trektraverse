@@ -39,7 +39,7 @@ public class Post extends BaseEntity {
     private Board board;
 
     @ManyToOne
-    @JoinColumn(name="regionId",nullable = false)
+    @JoinColumn(name = "regionId", nullable = false)
     private Region region;
 
     @ManyToOne
@@ -53,14 +53,13 @@ public class Post extends BaseEntity {
 //    private int watchCount;
 
 
-
-
     public Post(String title, String contnet, String writer, String password, Board board, Region region) {
-        this.postTitle=title;
-        this.postContent=contnet;
-        this.postWriter=writer;
-        this.postPw=password;
-        this.board=board;
-        this.region=region;
+        this.postTitle = title;
+        this.postContent = contnet;
+        this.postWriter = writer;
+        this.postPw = password;
+        this.board = board;
+        this.region = region;
     }
+
 }
