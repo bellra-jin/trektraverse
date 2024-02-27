@@ -7,6 +7,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import parkjinhee.projecttrektraverse.board.entity.Board;
 import parkjinhee.projecttrektraverse.board.repository.BoardRepository;
 import parkjinhee.projecttrektraverse.board.service.BoardService;
+import parkjinhee.projecttrektraverse.comment.entity.Comment;
+import parkjinhee.projecttrektraverse.comment.service.CommentService;
 import parkjinhee.projecttrektraverse.post.entity.Post;
 import parkjinhee.projecttrektraverse.post.entity.PostDto;
 import parkjinhee.projecttrektraverse.post.mapper.PostMapper;
@@ -31,19 +33,17 @@ public class PostController {
     //private final ImgFileService imgFileService;
     //private final MapService mapService;
     private final PostMapper postMapper;
-    //private final CommentService commentService;
+    private final CommentService commentService;
 
     private final RegionService regionService;
     private final String string = "/create";
 
-    public PostController(final PostService postService, final BoardService boardService, final ThemeService themeService,final PostMapper postMapper, final RegionService regionService){ //, final CommentService commentService) {
+    public PostController(final PostService postService, final BoardService boardService, final ThemeService themeService,final PostMapper postMapper, final RegionService regionService, final CommentService commentService) {
         this.postService = postService;
         this.boardService = boardService;
         this.themeService = themeService;
         this.postMapper = postMapper;
-
-        //this.commentService = commentService;
-
+        this.commentService = commentService;
         this.regionService = regionService;
     }
 
@@ -51,8 +51,8 @@ public class PostController {
     public String getPostDetail(@PathVariable("postId") Long postId, Model model) {
         Post post = this.postService.findPost(postId);
         model.addAttribute("post", post);
-//        List<Comment> comments = this.commentService.findCommentsByPostId(postId);
-//        model.addAttribute("comments", comments);
+        List<Comment> comments = this.commentService.findCommentsByPostId(postId);
+        model.addAttribute("comments", comments);
         return "post/post";
     }
 

@@ -72,13 +72,6 @@ public class PostService {
         return themeRepository.findAll();
     }
 
-//    public Post createPost(Post post, Long boardId ) {
-//        Board boardToCreate = this.boardService.findBoardById(boardId);
-//        post.setBoard(boardToCreate);
-//
-//        Post savedPost = (Post)this.postRepository.save(post);
-//        return savedPost;
-//    }
 
     //전 작업
     public Post createPost(Post post, Long boardId, Long themeId, Long regionId) {
@@ -97,9 +90,6 @@ public class PostService {
         Post savedPost = (Post)this.postRepository.save(post);
         return savedPost;
     }
-
-
-
 
 
     public Post updatePost(Post post, Long postId, Long boardId, Long themeId, Long regionId) {
@@ -153,7 +143,6 @@ public class PostService {
                 foundPost.setTheme(null); // themeId가 null이라면 theme을 null로 설정할 수도 있습니다.
             }
         });
-
 
         return (Post)this.postRepository.save(foundPost);
     }

@@ -9,16 +9,16 @@ import java.time.LocalDateTime;
 
 @Setter
 @Getter
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "postId", nullable = false)
     private Post post;
 
     @Column(nullable = false, length = 10)
@@ -30,6 +30,6 @@ public class Comment extends BaseEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String commentContent;
 
-    @Column(nullable = false)
-    private int commentLike;
+//    @Column(nullable = true)
+//    private int commentLike;
 }
