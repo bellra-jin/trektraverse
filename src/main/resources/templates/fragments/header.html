@@ -14,12 +14,7 @@
                 <nav>
                     <ul>
                         <li th:each="board : ${boards}">
-                            <a
-                               th:href="@{/boards/{boardId}(boardId=${board.id})}"
-                               th:text="${board.boardTitle}"
-                               >
-
-                            </a>
+                            <a th:href="@{'/' + ${board.boardTitle}}">[[${board.boardTitle}]]</a>
                         </li>
                     </ul>
                 </nav>

@@ -17,21 +17,21 @@ public class PostDto {
     private String postContent;
     private String postWriter;
     private String postPw;
-    private Long boardId;
-    private Long regionId;
-    private Long themeId;
+    private Board board;
+    private Region region;
+    private Theme theme;
 //    private int postLike;
 //    private int watchCount;
 
     //final int postLike, final int watchCount 추후 삽입
-        public PostDto( final String postTitle, final String postContent, final String postWriter, final String postPw, final Long boardId, final Long regionId, final Long themeId) {
+        public PostDto( final String postTitle, final String postContent, final String postWriter, final String postPw, final Board board, final Region region, final Theme theme) {
         this.postTitle = postTitle;
         this.postContent = postContent;
         this.postWriter = postWriter;
-        this.regionId=regionId;
+        this.region=region;
         this.postPw = postPw;
-        this.boardId = boardId;
-        this.themeId = themeId;
+        this.board = board;
+        this.theme = theme;
 //        this.postLike = postLike;
 //        this.watchCount = watchCount;
     }

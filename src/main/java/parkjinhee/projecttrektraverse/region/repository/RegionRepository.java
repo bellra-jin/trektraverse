@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface RegionRepository extends JpaRepository<Region, Long> {
+
+    Region findRegionById(Long id);
     List<Region> findByGroupTableId(Long groupId);
 
 }

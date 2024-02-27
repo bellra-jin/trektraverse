@@ -19,7 +19,6 @@ import parkjinhee.projecttrektraverse.theme.repository.ThemeRepository;
 import parkjinhee.projecttrektraverse.theme.service.ThemeService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -31,18 +30,21 @@ public class PostService {
 
     private final BoardRepository boardRepository;
 
-    private final RegionRepository regionRepository;
-
     private final ThemeRepository themeRepository;
 
+    private final RegionService regionService;
 
-    public PostService(PostRepository postRepository, BoardService boardService, ThemeService themeService, BoardRepository boardRepository, RegionRepository regionRepository, ThemeRepository themeRepository) {
+    private final RegionRepository regionRepository;
+
+
+    public PostService(PostRepository postRepository, BoardService boardService, ThemeService themeService, BoardRepository boardRepository, ThemeRepository themeRepository, RegionService regionService, RegionRepository regionRepository) {
         this.boardService = boardService;
         this.postRepository = postRepository;
         this.themeService = themeService;
         this.boardRepository = boardRepository;
-        this.regionRepository = regionRepository;
         this.themeRepository = themeRepository;
+        this.regionService = regionService;
+        this.regionRepository= regionRepository;
     }
 
     public Page<Post> findPostsByBoardAndKeyword(Board board, String keyword, PageRequest pageRequest) {
@@ -62,12 +64,36 @@ public class PostService {
         });
     }
 
+    public List<Board> findAllBoards() {
+        return boardRepository.findAll();
+    }
+
+    public List<Theme> findAllThemes() {
+        return themeRepository.findAll();
+    }
+
+//    public Post createPost(Post post, Long boardId ) {
+//        Board boardToCreate = this.boardService.findBoardById(boardId);
+//        post.setBoard(boardToCreate);
+//
+//        Post savedPost = (Post)this.postRepository.save(post);
+//        return savedPost;
+//    }
 
     //전 작업
-    public Post createPost(Post post, Board board, Theme theme, Region region) {
-        post.setTheme(theme);
-        post.setBoard(board);
-        post.setRegion(region); // 추가된 코드
+    public Post createPost(Post post, Long boardId, Long themeId, Long regionId) {
+
+        Board boardToCreate = this.boardService.findBoardById(boardId);
+        post.setBoard(boardToCreate);
+
+        Theme themeToCreate = this.themeService.findThemeById(themeId);
+        post.setTheme(themeToCreate);
+
+        Region regionToCreate = this.regionService.findRegionById(regionId);
+        post.setRegion(regionToCreate);
+
+
+
         Post savedPost = (Post)this.postRepository.save(post);
         return savedPost;
     }
@@ -76,22 +102,28 @@ public class PostService {
 
 
 
-
-    public Post updatePost(Post post, Long postId) {
+    public Post updatePost(Post post, Long postId, Long boardId, Long themeId, Long regionId) {
         post.setId(postId);
 
-        Post foundPost = (Post)this.postRepository.findById(postId).orElseThrow(() -> {
+
+        Post foundPost = (Post)this.postRepository.findById(post.getId()).orElseThrow(() -> {
             return new ServiceLogicException(ExceptionCode.POST_NOT_FOUND);
         });
+        Board boardToCreate = this.boardService.findBoardById(boardId);
+        post.setBoard(boardToCreate);
+
+        Theme themeToCreate = this.themeService.findThemeById(themeId);
+        post.setTheme(themeToCreate);
+
+        Region regionToCreate = this.regionService.findRegionById(regionId);
+        post.setRegion(regionToCreate);
 
         Optional.ofNullable(post.getPostTitle()).ifPresent((postTitle) ->{
             foundPost.setPostTitle(postTitle);
         });
-
         Optional.ofNullable(post.getPostContent()).ifPresent((postContent) ->{
             foundPost.setPostContent(postContent);
         });
-
         Optional.ofNullable(post.getPostPw()).ifPresent((postPw) ->{
             foundPost.setPostPw(postPw);
         });
@@ -122,26 +154,9 @@ public class PostService {
             }
         });
 
-        return foundPost;
+
+        return (Post)this.postRepository.save(foundPost);
     }
-
-
-
-//    public Post updatePost(Post post, Long postId, Long boardId, Long regionId) {
-//        // findById 메서드로 기존 게시글을 조회합니다.
-//        Post existingPost = postRepository.findById(post.getId())
-//                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-//
-//        // 각 필드의 값을 새로운 값으로 업데이트합니다.
-//        existingPost.setPostTitle(post.getPostTitle());
-//        existingPost.setPostContent(post.getPostContent());
-//        existingPost.setBoard(post.getBoard());
-//        existingPost.setTheme(post.getTheme());
-//        existingPost.setRegion(post.getRegion());
-//
-//        // 엔티티를 저장하고 반환합니다.
-//        return postRepository.save(existingPost);
-//    }
 
     public void deletePost(Long id) {
         Post foundPost = (Post)this.postRepository.findById(id).orElseThrow(() -> {
