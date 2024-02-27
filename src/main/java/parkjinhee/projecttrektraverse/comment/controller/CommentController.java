@@ -35,7 +35,6 @@ public class CommentController {
         Comment comment = commentMapper.commentDtoToComment(commentDto);
         Comment updatedComment = commentService.updateComment(commentId, comment);
 
-
         redirectAttributes.addAttribute("postId", updatedComment.getPost().getId());
         return "redirect:/posts/{postId}";
     }

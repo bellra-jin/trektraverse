@@ -22,6 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
+
     public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
@@ -53,23 +54,21 @@ public class CommentService {
 
     public Comment updateComment(Long commentId, Comment comment) {
         comment.setId(commentId);
-
-        Comment foundComment = commentRepository.findById(comment.getId()).orElseThrow(() -> {
-            return new ServiceLogicException(ExceptionCode.COMMENT_NOT_FOUND);
+        Comment foundComment = commentRepository.findById(comment.getId()).orElseThrow(() ->{return new ServiceLogicException(ExceptionCode.COMMENT_NOT_FOUND);
         });
 
-        Optional.ofNullable(comment.getCommentContent()).ifPresent((commentContent) -> {
-            foundComment.setCommentContent(commentContent);
+        Optional.ofNullable(comment.getCommentPw()).ifPresent((CommentPw) -> {
+            foundComment.setCommentPw(CommentPw);
         });
 
-        Optional.ofNullable(comment.getCommentWriter()).ifPresent((commentWriter) -> {
-            foundComment.setCommentPw(commentWriter);
+        Optional.ofNullable(comment.getCommentWriter()).ifPresent((CommentWriter) -> {
+            foundComment.setCommentWriter(CommentWriter);
         });
 
-        Optional.ofNullable(comment.getCommentPw()).ifPresent((commentPw) -> {
-            foundComment.setCommentPw(commentPw);
+        Optional.ofNullable(comment.getCommentContent()).ifPresent((CommentContent) ->{
+            foundComment.setCommentContent(CommentContent);
         });
-
+        
         return commentRepository.save(foundComment);
     }
 
