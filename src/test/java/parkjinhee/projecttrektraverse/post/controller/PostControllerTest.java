@@ -4,9 +4,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class PostControllerTest {
-
-    @A
-
-}
+//@SpringBootTest
+//class PostControllerTest {
+//
+//    @A
+//
+//}

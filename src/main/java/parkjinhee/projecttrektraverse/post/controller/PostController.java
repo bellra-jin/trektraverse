@@ -151,7 +151,7 @@ public class PostController {
     }
 
     @DeleteMapping({"/{postId}"})
-    public String deletePost(@PathVariable Long postId, RedirectAttributes redirectAttributes) {
+    public String deletePost(@PathVariable("postId") Long postId, RedirectAttributes redirectAttributes) {
         this.postService.deletePost(postId);
         redirectAttributes.addFlashAttribute("message", "과목이 제거되었습니다.");
         return "redirect:/posts";
