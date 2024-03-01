@@ -45,7 +45,7 @@ public class BoardController {
     }
 
     @GetMapping({"/{boardId}"})
-    public String getBoard(@PathVariable Long boardId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String keyword, Model model) {
+    public String getBoard(@PathVariable("boardId") Long boardId, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "10") int size, @RequestParam(value="keyword", required = false) String keyword, Model model) {
         Board board = this.boardService.findBoardById(boardId);
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<Post> postPage = this.postService.findPostsByBoardAndKeyword(board, keyword, pageRequest);

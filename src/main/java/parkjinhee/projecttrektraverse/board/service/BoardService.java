@@ -6,8 +6,10 @@ import parkjinhee.projecttrektraverse.board.entity.Board;
 import parkjinhee.projecttrektraverse.board.repository.BoardRepository;
 import parkjinhee.projecttrektraverse.global.exception.ExceptionCode;
 import parkjinhee.projecttrektraverse.global.exception.ServiceLogicException;
+import parkjinhee.projecttrektraverse.theme.entity.Theme;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BoardService {
@@ -27,10 +29,13 @@ public class BoardService {
         });
     }
 
+    public Board createBoard(Board board){return this.boardRepository.create(board);}
+
     @Transactional(readOnly = true)
     public Board findBoardWithGroups(Long id) {
         return boardRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
     }
+
 
 
 

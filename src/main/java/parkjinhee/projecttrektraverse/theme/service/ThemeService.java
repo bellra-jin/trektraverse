@@ -6,6 +6,7 @@ import parkjinhee.projecttrektraverse.global.exception.ServiceLogicException;
 import parkjinhee.projecttrektraverse.theme.entity.Theme;
 import parkjinhee.projecttrektraverse.theme.repository.ThemeRepository;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -32,15 +33,20 @@ public class ThemeService {
     }
 
     public Theme updateTheme(Theme theme) {
-        this.foundTheme = (Theme)this.themeRepository.findById(theme.getId()).orElseThrow(() -> {
-            return new ServiceLogicException(ExceptionCode.THEME_NOT_FOUND);
+        this.foundTheme = (Theme)this.themeRepository.findById(theme.getId()).orElseThrow(() ->{
+           return new ServiceLogicException(ExceptionCode.THEME_NOT_FOUND);
         });
-        Optional.ofNullable(theme.getThemeTitle()).ifPresent((themeTitle) -> {
-            this.foundTheme = this.foundTheme.builder().themeTitle(themeTitle).build();
+        Optional.ofNullable(theme.getThemeTitle()).ifPresent((ThemeTitle) -> {
+            foundTheme = foundTheme.toBuilder().themeTitle(ThemeTitle).build();
         });
-        this.foundTheme = this.foundTheme.builder().themePw(theme.getThemePw()).build();
-        return this.themeRepository.update(this.foundTheme);
+        Optional.ofNullable(theme.getThemePw()).ifPresent((ThemePw) -> {
+            foundTheme = foundTheme.toBuilder().themePw(theme.getThemePw()).build();
+        });
+
+        return themeRepository.update(this.foundTheme);
+
     }
+
 
     public void deleteTheme(Long id) {
         this.foundTheme = (Theme)this.themeRepository.findById(id).orElseThrow(() -> {
@@ -51,3 +57,5 @@ public class ThemeService {
 
 
 }
+
+

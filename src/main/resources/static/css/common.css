@@ -219,3 +219,7 @@ img {
 #footer .top_bottom .copyright{
     color: var(--color-sky);
 }
+
+.input-groupTable{
+    display: flex;
+}

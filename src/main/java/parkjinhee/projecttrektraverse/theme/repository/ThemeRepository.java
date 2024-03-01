@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+
 @Repository
 public class ThemeRepository {
 
@@ -58,18 +59,19 @@ public class ThemeRepository {
             return ps;
         }, keyHolder);
         Number key = keyHolder.getKey();
-        return key == null ? theme : theme.toBuilder().id(key.longValue()).themeTitle(theme.getThemeTitle()).themePw(theme.getThemePw()).createdAt(createdAt).build();
+        return key == null ? theme : Theme.builder().id(key.longValue()).themeTitle(theme.getThemeTitle()).themePw(theme.getThemePw()).createdAt(createdAt).build();
     }
 
     public Theme update(Theme theme) {
-        String updateSql = "UPDATE theme SET theme_title = ?, theme_pw = ? WHERE id = ?";
-        this.jdbcTemplate.update(updateSql, new Object[]{theme.getThemeTitle(), theme.getThemePw(), theme.getId()});
+        String updateSql = "UPDATE theme SET theme_title=?, theme_pw=? WHERE id=?";
+        jdbcTemplate.update(updateSql, theme.getThemeTitle(), theme.getThemePw(), theme.getId());
         return theme;
     }
 
     public void delete(Theme theme) {
         String sql = "DELETE FROM theme WHERE id = ?";
-        this.jdbcTemplate.update(sql, new Object[]{theme.getId()});
+        this.jdbcTemplate.update(sql, theme.getId());
     }
 
 }
+
