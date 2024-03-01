@@ -1,5 +1,7 @@
 package parkjinhee.projecttrektraverse.post.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,8 @@ import parkjinhee.projecttrektraverse.comment.entity.Comment;
 import parkjinhee.projecttrektraverse.comment.service.CommentService;
 import parkjinhee.projecttrektraverse.post.entity.Post;
 import parkjinhee.projecttrektraverse.post.entity.PostDto;
+import parkjinhee.projecttrektraverse.post.entity.PostPwDto;
+import parkjinhee.projecttrektraverse.post.entity.PostResponseDto;
 import parkjinhee.projecttrektraverse.post.mapper.PostMapper;
 import parkjinhee.projecttrektraverse.post.service.PostService;
 import parkjinhee.projecttrektraverse.region.entity.Region;
@@ -20,6 +24,7 @@ import parkjinhee.projecttrektraverse.theme.entity.Theme;
 import parkjinhee.projecttrektraverse.theme.repository.ThemeRepository;
 import parkjinhee.projecttrektraverse.theme.service.ThemeService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -55,6 +60,8 @@ public class PostController {
         model.addAttribute("comments", comments);
         return "post/post";
     }
+
+
 
     @GetMapping({"/create"})
     public String createPost(Model model, @RequestParam(value = "boardId", required = false) Long boardId,
@@ -99,15 +106,66 @@ public class PostController {
         }
     }
 
-
-
     @GetMapping("/edit/{boardId}")
     @ResponseBody
     public List<Region> getRegionsByBoard1(@PathVariable("boardId") Long boardId) {
         return regionService.findByGroupId(boardId);
     }
 
-    @GetMapping({"/{postId}/edit"})
+
+    // 비밀번호 확인 요청을 처리하는 메소드(수정)
+    @RequestMapping(value = "/checkPassword", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean checkPassword(@RequestBody PostPwDto postPwDto) {
+        return postService.checkPassword(postPwDto);
+    }
+
+    // 게시글 삭제를 위한 비밀번호 확인 요청을 처리하는 메소드
+
+    @PostMapping("/deletePassword")
+    public String deletePostWithPassword(@RequestParam("postId") Long postId,
+                                         @RequestParam("postPw") String postPw,
+                                         RedirectAttributes redirectAttributes) {
+        // 삭제 후 리다이렉트할 기본 URL, 필요에 따라 조정 가능
+        String redirectUrl = "/defaultPath";
+
+        // 비밀번호 확인 로직 수행
+        if (postService.checkPassword(new PostPwDto(postId, postPw))) {
+            // 게시글 삭제 전에 boardId와 themeId 조회
+            Long boardId = postService.getBoardIdByPostId(postId);
+            Long themeId = postService.getThemeIdByPostId(postId);
+
+            // 게시글 삭제 수행
+            postService.deletePost(postId);
+
+            // 삭제 성공 메시지를 flash attribute로 추가
+            redirectAttributes.addFlashAttribute("message", "게시글이 성공적으로 삭제되었습니다.");
+
+            if (themeId != null) {
+                // post가 특정 테마에 속한 경우 해당 테마 페이지로 리다이렉트
+                redirectUrl = "/themes/" + themeId;
+            } else if (boardId != null) {
+                // post가 특정 게시판에 속한 경우 해당 게시판 페이지로 리다이렉트
+                redirectUrl = "/boards/" + boardId;
+            }
+        } else {
+            // 비밀번호 오류 시
+            Long boardId = postService.getBoardIdByPostId(postId); // 오류 시에도 boardId가 필요할 수 있음
+
+            // 비밀번호 오류 메시지를 flash attribute로 추가
+            redirectAttributes.addFlashAttribute("error", "비밀번호가 틀렸습니다.");
+            // 비밀번호 오류 상황에서 사용자를 게시글 조회 페이지로 리다이렉트
+            redirectUrl = "/board/post?postId=" + postId + "&boardId=" + boardId;
+        }
+
+        // 최종 결정된 URL로 리다이렉트
+        return "redirect:" + redirectUrl;
+    }
+
+
+
+    // 실제 게시글 수정 페이지를여주는 메소드
+    @GetMapping("/{postId}/edit")
     public String editPost(@PathVariable("postId") Long postId, Model model) {
         Post post = this.postService.findPost(postId);
         List<Board> boards = postService.findAllBoards();
@@ -119,8 +177,6 @@ public class PostController {
 
         return "post/editPost";
     }
-
-
 
     @PostMapping({"/{postId}/edit"})
     public String editPost(@PathVariable("postId") Long postId, @ModelAttribute PostDto postDto, RedirectAttributes redirectAttributes, @RequestParam("boardId") Long boardId, @RequestParam("themeId") Long themeId, @RequestParam("regionId") Long regionId) {
@@ -150,12 +206,19 @@ public class PostController {
         return "redirect:" + redirectUrl;
     }
 
-    @DeleteMapping({"/{postId}"})
-    public String deletePost(@PathVariable("postId") Long postId, RedirectAttributes redirectAttributes) {
-        this.postService.deletePost(postId);
-        redirectAttributes.addFlashAttribute("message", "과목이 제거되었습니다.");
-        return "redirect:/posts";
-    }
+
+//    @DeleteMapping({"/{currentPost}"})
+//    public String deletePost(@PathVariable("currentPost") Long postId, RedirectAttributes redirectAttributes) {
+//        this.postService.deletePost(postId);
+//        redirectAttributes.addFlashAttribute("message", "과목이 제거되었습니다.");
+//        return "redirect:/posts";
+//    }
+//    @DeleteMapping({"/{postId}"})
+//    public String deletePost(@PathVariable Long postId, RedirectAttributes redirectAttributes) {
+//        this.postService.deletePost(postId);
+//        redirectAttributes.addFlashAttribute("message", "과목이 제거되었습니다.");
+//        return "redirect:/posts";
+//    }
 
 
 

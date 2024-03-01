@@ -1,68 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
   <meta charset="UTF-8" />
-  <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-          crossorigin="anonymous"
-  />
-  <link
-          href="https://font.elice.io/css?family=Elice+DX+Neolli"
-          rel="stylesheet"
-  />
 
-  <style>
-    html,
-    body {
-      font-family: "Elice DX Neolli", sans-serif;
-    }
-  </style>
-  <title>게시판 수정</title>
+  <title>테마 수정</title>
 </head>
 <body>
-<div class="container my-5">
-  <div class="header mb-5">
-    <h1 class="text-center">게시판 수정</h1>
-  </div>
-  <form
-          th:action="@{/themes/{themeId}/edit(themeId=${theme.id})}"
-          method="post"
-  >
-    <div class="mb-3">
-      <label for="themeTitle">게시판 이름</label>
-      <input
-              type="themeTitle"
-              class="form-control"
-              id="themeTitle"
-              name="themeTitle"
-              maxlength="20"
-              placeholder="게시판 이름 입력 (최대 20자)"
-              required
-              th:value="${theme.themeTitle}"
-      />
+<div layout:fragment="content">
+  <div class="container my-5">
+    <div class="header mb-5">
+      <h1 class="text-center">테마 수정</h1>
     </div>
-    <div class="md-3">
-      <input type="password" class="form-control" id="themePw" name="themePw" placeholder="6자 미만으로 입력해주세요">
-    </div>
-
-    <button type="submit" class="btn btn-primary">게시판 수정</button>
-    <button
-            type="button"
-            class="btn btn-secondary"
-            onclick="window.history.back();"
+    <form
+            th:action="@{/themes/{themeId}/edit(themeId=${theme.id})}"
+            method="post"
     >
-      취소
-    </button>
-  </form>
+      <div class="mb-3">
+        <label for="themeTitle">게시판 이름</label>
+        <input
+                type="themeTitle"
+                class="form-control"
+                id="themeTitle"
+                name="themeTitle"
+                maxlength="20"
+                placeholder="게시판 이름 입력 (최대 20자)"
+                required
+                th:value="${theme.themeTitle}"
+        />
+      </div>
+      <div class="md-3">
+        <input type="password" class="form-control" id="themePw" name="themePw" placeholder="6자 미만으로 입력해주세요">
+      </div>
+
+      <button type="submit" class="btn btn-primary">게시판 수정</button>
+      <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="window.history.back();"
+      >
+        취소
+      </button>
+    </form>
+  </div>
+
 </div>
 
-<!-- 부트스트랩 JS 추가 -->
-<script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"
-></script>
+
 </body>
 </html>

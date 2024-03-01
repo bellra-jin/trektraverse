@@ -2,14 +2,20 @@ package parkjinhee.projecttrektraverse.post.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import parkjinhee.projecttrektraverse.board.entity.Board;
 import parkjinhee.projecttrektraverse.board.repository.BoardRepository;
 import parkjinhee.projecttrektraverse.board.service.BoardService;
 import parkjinhee.projecttrektraverse.global.exception.ExceptionCode;
 import parkjinhee.projecttrektraverse.global.exception.ServiceLogicException;
 import parkjinhee.projecttrektraverse.post.entity.Post;
+import parkjinhee.projecttrektraverse.post.entity.PostDto;
+import parkjinhee.projecttrektraverse.post.entity.PostPwDto;
+import parkjinhee.projecttrektraverse.post.entity.PostResponseDto;
 import parkjinhee.projecttrektraverse.post.repository.PostRepository;
 import parkjinhee.projecttrektraverse.region.entity.Region;
 import parkjinhee.projecttrektraverse.region.repository.RegionRepository;
@@ -35,6 +41,7 @@ public class PostService {
     private final RegionService regionService;
 
     private final RegionRepository regionRepository;
+
 
 
     public PostService(PostRepository postRepository, BoardService boardService, ThemeService themeService, BoardRepository boardRepository, ThemeRepository themeRepository, RegionService regionService, RegionRepository regionRepository) {
@@ -72,6 +79,25 @@ public class PostService {
         return themeRepository.findAll();
     }
 
+    public Long getBoardIdByPostId(Long postId) {
+        // PostRepository에 정의한 메서드를 호출하여 게시판 ID를 가져옴
+        return postRepository.findBoardIdByPostId(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+    }
+
+    public Long getThemeIdByPostId(Long postId) {
+        // PostRepository에 정의한 메서드를 호출하여 게시판 ID를 가져옴
+        return postRepository.findThemeIdByPostId(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글을 찾을 수 없습니다."));
+    }
+
+    public boolean checkPassword(PostPwDto postPwDto) {
+        Post post = postRepository.findById(postPwDto.getPostId())
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + postPwDto.getPostId()));
+        return post.getPostPw().equals(postPwDto.getPostPw());
+    }
+
+
 
     //전 작업
     public Post createPost(Post post, Long boardId, Long themeId, Long regionId) {
@@ -86,19 +112,19 @@ public class PostService {
         post.setRegion(regionToCreate);
 
 
-
         Post savedPost = (Post)this.postRepository.save(post);
         return savedPost;
     }
 
 
-    public Post updatePost(Post post, Long postId, Long boardId, Long themeId, Long regionId) {
-        post.setId(postId);
 
+    public Post updatePost(Post post, Long postId, Long boardId, Long themeId, Long regionId ) {
+        post.setId(postId);
 
         Post foundPost = (Post)this.postRepository.findById(post.getId()).orElseThrow(() -> {
             return new ServiceLogicException(ExceptionCode.POST_NOT_FOUND);
         });
+
         Board boardToCreate = this.boardService.findBoardById(boardId);
         post.setBoard(boardToCreate);
 
@@ -114,9 +140,9 @@ public class PostService {
         Optional.ofNullable(post.getPostContent()).ifPresent((postContent) ->{
             foundPost.setPostContent(postContent);
         });
-        Optional.ofNullable(post.getPostPw()).ifPresent((postPw) ->{
-            foundPost.setPostPw(postPw);
-        });
+//        Optional.ofNullable(post.getPostPw()).ifPresent((postPw) ->{
+//            foundPost.setPostPw(postPw);
+//        });
 
         // Board 업데이트 로직
         Optional.ofNullable(post.getBoard()).ifPresent(board -> {
